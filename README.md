@@ -1,32 +1,51 @@
 # Monorepo Iceberg
 
 This repository contains the following submodules:
-- **Iceberg**: `iceberg/` (Upstream: `apache/iceberg`)
-- **OpenHouse**: `openhouse/` (Upstream: `cbb330/openhouse`)
+- **Iceberg**: `iceberg/` (Fork: `cbb330/iceberg`)
+- **OpenHouse**: `openhouse/` (Fork: `cbb330/openhouse`)
 
 ## Workflow
 
-To simplify working with submodules, use the provided `git-sync.sh` script.
-
-### How to make changes
-
-1. Make your code changes in any directory (submodule or root).
-2. Run the sync script:
-
+### 1. Setup (One-time)
+Ensure you have the repository and submodules initialized:
 ```bash
-./git-sync.sh "Your commit message"
+git clone --recursive https://github.com/cbb330/monorepo-iceberg.git
+cd monorepo-iceberg
 ```
 
-### What the script does
+### 2. Development Cycle
+The normal workflow is designed to be simple and automated using `git-sync.sh`.
 
-1. Iterates through each submodule.
-2. If there are changes, it commits them to the currently checked-out branch of the submodule.
-3. Pushes the submodule changes to its upstream remote.
-4. Updates the main repository with the new submodule references.
-5. Commits and pushes the main repository.
+#### Step A: Make Changes
+Edit files in `iceberg/`, `openhouse/`, or the root directory as needed. You don't need to worry about manually committing in each submodule.
 
-### Important Notes
+#### Step B: Sync & Push
+Instead of standard git commands, run:
+```bash
+./git-sync.sh "Description of your changes"
+```
+This script will automatically:
+1. Detect changes in any submodule.
+2. Commit those changes to the **current branch** in that submodule.
+3. Push submodule changes to their upstream remote.
+4. Update the monorepo pointers.
+5. Commit and push the monorepo.
 
-- **Branches**: Ensure your submodules are checked out to a branch (e.g., `main` or `master`) and not in a "detached HEAD" state if you intend to push changes.
-- **Permissions**: You need write access to the upstream repositories to push changes.
+### 3. Working with Branches
+**Crucial:** Before making changes, ensure your submodules are on the correct branches.
+- **Check status:**
+  ```bash
+  git submodule foreach 'git branch --show-current'
+  ```
+- **Switch branches:**
+  ```bash
+  cd iceberg && git checkout test-harness
+  cd ../openhouse && git checkout main
+  ```
 
+### Troubleshooting
+- **Detached HEAD**: If `git-sync.sh` fails saying a submodule is in "detached HEAD", it means you aren't on a branch. Fix it by checking out a branch:
+  ```bash
+  cd iceberg
+  git checkout -b my-feature-branch
+  ```
