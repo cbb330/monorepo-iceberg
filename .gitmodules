@@ -1,0 +1,6 @@
+[submodule "iceberg"]
+	path = iceberg
+	url = git@github.com:apache/iceberg.git
+[submodule "openhouse"]
+	path = openhouse
+	url = https://github.com/cbb330/openhouse.git
